@@ -32,7 +32,7 @@ class Project3:
         n = int(n_str, 16)
         d = int(d_str, 16)
         c = int(c_str, 16)
-        m = 0
+        m = pow(c, d, n)
 
         return hex(m).rstrip('L')
 
