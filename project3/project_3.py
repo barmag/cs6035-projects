@@ -2,7 +2,6 @@ import hashlib
 import math
 import random
 import sys
-from turtle import st
 # Do NOT alter the import list!!!!
 
 
@@ -176,7 +175,7 @@ class Project3:
         trans_hash_as_int = int.from_bytes(trans_hash.digest(), sys.byteorder)
 
         # Create the signature (the number 11 is simply a placeholder)
-        signature = 11
+        signature = pow(trans_hash_as_int, d, n)
 
         return signature
 
