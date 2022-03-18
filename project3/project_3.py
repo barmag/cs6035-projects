@@ -2,6 +2,7 @@ import hashlib
 import math
 import random
 import sys
+from turtle import st
 # Do NOT alter the import list!!!!
 
 
@@ -151,8 +152,16 @@ class Project3:
         return ""
 
     def task_3(self, user_id_1: str, user_id_2: str, amount: int, prev_block_hash: str) -> int:
-        # TODO: Implement this method for Task 3
         nonce = 0
+        transaction_string = f"{user_id_1}:{user_id_2}:{amount}{prev_block_hash}"
+        while True:
+            candidate = f"{nonce}{transaction_string}"
+            block_hash = hashlib.sha256(candidate.encode())
+            hex = block_hash.hexdigest()
+            if hex.startswith('00'):
+                return nonce
+            nonce += 1
+            # break
 
         return nonce
 
