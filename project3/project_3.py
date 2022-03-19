@@ -50,10 +50,10 @@ class Project3:
         # https://mathworld.wolfram.com/ModularInverse.html
         # https://www.dcode.fr/extended-gcd
         phi  = (p-1) * (q-1)
-        u1, u2, u3,  v1, v2, v3 = 1, 0, e, 0, 1, phi
-        while v3 != 0:
-            q = u3 // v3
-            v1, v2, v3, u1, u2, u3 = (u1 - q * v1), (u2 - q * v2), (u3 - q * v3), v1, v2, v3
+        u1, u2, r1,  v1, v2, r2 = 1, 0, e, 0, 1, phi
+        while r2 != 0:
+            q = r1 // r2
+            v1, v2, r2, u1, u2, r1 = (u1 - q * v1), (u2 - q * v2), (r1 - q * r2), v1, v2, r2
         return u1 % phi
         
 
@@ -221,8 +221,18 @@ class Project3:
         return hex(d).rstrip('L')
 
     def task_6(self, given_public_key_n: int, given_public_key_e: int, public_key_list: list) -> int:
-        # TODO: Implement this method for Task 6
+        counter = 0
         d = 0
+        for candidate_n in public_key_list:
+            n_gcd = math.gcd(given_public_key_n, candidate_n)
+            if n_gcd != 1:
+                # found two keys with common factors
+                #factorize using the acquired knowledge
+                p = n_gcd
+                q = given_public_key_n // p
+                d = self.get_private_key_from_p_q_e(p, q, given_public_key_e)
+                break
+            counter += 1
 
         return d
 
