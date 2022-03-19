@@ -8,6 +8,12 @@ class TestProject3(unittest.TestCase):
     def setUp(self):
         self.project_3 = project_3.Project3()
 
+    def test_isqrt(self):
+        n = self.project_3.isqrt(4)
+        self.assertEqual(n , 2)
+        self.assertEqual(self.project_3.isqrt(16) , 4)
+        self.assertEqual(self.project_3.isqrt(14641) , 121)
+        
     def test_task_1(self):
         m = self.project_3.task_1('0xbd2b22e48241fa4a85bfcdc240f74217ac37d40cd34cd55065af7259c4317f7da5a8c918935f04f00f0710dd9cd947e3d2a2ce1ca969d8b217f737ec549934d40af35614da4a7e2e3d2d329d408cacd21a80038c49c232935926419d1de2658525bb83493e05fdbff6eb1b99d5ef4cab2666e1cff9d0d4c3895871036453ba91',
                                   '0xaf17623087b071eed0657c19b4f027a8a9aaf306fbfd3de4307a782946435a71fe07803ad30d3c10c6980fb050217d3d0e15cb191465f840bf95ff992ba4b31389300053fd3236188286bd4a343fb70273c18cb378e120b7e44e2b9028d1267d4f6abf4bb31744ca480c0585455cf7d207e04630a3bc013c5bb8ff4066c41801',

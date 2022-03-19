@@ -2,6 +2,7 @@ import hashlib
 import math
 import random
 import sys
+from tkinter import N
 # Do NOT alter the import list!!!!
 
 
@@ -12,20 +13,49 @@ class Project3:
 
     # TODO: OPTIONAL - Add helper methods below
     # BEGIN HELPER METHODS
+    def isqrt(self, n: int) -> int:
+        # Newtorn method square root https://math.mit.edu/~stevenj/18.335/newton-sqrt.pdf
+        x = n
+        y = (x + 1) // 2
+        while y < x:
+            x = y
+            y = (x + n // x) // 2
+        return x
     # END HELPER METHODS
 
     def get_factors(self, n: int):
-        # TODO: Implement this method for Task 5, Step 1
+        # Fermat factorization method https://en.wikipedia.org/wiki/Fermat%27s_factorization_method
         p = 0
         q = 0
-
+        # brute force --- doesn't work
+        # for i in range (2, n - 1):
+        #     if n % i == 0:
+        #         p = i
+        #         q = n / i
+        #         break
+        a = self.isqrt(n) + 1
+        b2 = pow(a, 2) - n
+        b = self.isqrt(b2)
+        
+        while pow(b, 2) != b2:
+            a += 1
+            b2 = pow(a, 2) - n
+            b = self.isqrt(b2)
+        
+        return a + b, a - b
         return p, q
 
     def get_private_key_from_p_q_e(self, p: int, q: int, e: int):
         # TODO: Implement this method for Task 5, Step 2
-        d = 0
-
-        return d
+        # https://mathworld.wolfram.com/ModularInverse.html
+        # https://www.dcode.fr/extended-gcd
+        phi  = (p-1) * (q-1)
+        u1, u2, u3,  v1, v2, v3 = 1, 0, e, 0, 1, phi
+        while v3 != 0:
+            q = u3 // v3
+            v1, v2, v3, u1, u2, u3 = (u1 - q * v1), (u2 - q * v2), (u3 - q * v3), v1, v2, v3
+        return u1 % phi
+        
 
     def task_1(self, n_str: str, d_str: str, c_str: str) -> str:
         # TODO: Implement this method for Task 1
@@ -165,8 +195,6 @@ class Project3:
         return nonce
 
     def task_4(self, from_user_id: str, to_user_id: str, amount: int, d: int, e: int, n: int) -> int:
-        # TODO: Implement this method for Task 4
-
         # Build the transaction string
         trans = from_user_id + ':' + to_user_id + ':' + str(amount)
         # Hash the transaction string
@@ -185,6 +213,8 @@ class Project3:
 
         # Step 1
         p, q = self.get_factors(n)
+        if p * q == n:
+            ssd = 'greta'
         # Step 2
         d = self.get_private_key_from_p_q_e(p, q, e)
 
