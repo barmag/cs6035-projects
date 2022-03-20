@@ -2,9 +2,9 @@ import hashlib
 import math
 import random
 import sys
-from tkinter import N
 # Do NOT alter the import list!!!!
-
+# import numpy as np
+# import gmpy2
 
 class Project3:
 
@@ -21,6 +21,51 @@ class Project3:
             x = y
             y = (x + n // x) // 2
         return x
+
+    def icbrt(self, n):
+        # r, fo = gmpy2.iroot(n , 3)
+        # j = n - pow(r, 3)
+        # # print(f"the diff is {j}, root founf {fo}")
+        # return r
+        # a = np.array([n], dtype=np.int)
+        # return np.cbrt(a)
+        x = n
+        y = (x + 1) // 2
+        while y < x:
+            x = y
+            y = (2*x + n // pow(x, 2)) // 3
+        
+        return x
+        
+
+    def egcd(self, a: int, b: int) -> int:
+        if a % b == 0:
+            return 0, 1
+        else:
+            q = a // b
+            x, y = self.egcd(b, a % b)
+            return y, x - y * q
+        
+
+    def product(self, a, b):
+        return a*b
+
+    def chineese_reminder(self, n_items, c_items):
+        N = n_items[0] * n_items[1]
+        a, b = self.egcd(n_items[0], n_items[1])
+        p1 = b * n_items[1] % N
+        q1 = a * n_items[0] % N
+        c_p = (c_items[0] * p1 + c_items[1] * q1) % N
+
+        a, b = self.egcd(N, n_items[2])
+        n_p = N
+        N *= n_items[2]
+        p1 = b * n_items[2] % N
+        q1 = a * n_p % N
+        c = (c_p * p1 +  c_items[2]  * q1) % N
+        r = self.icbrt(c)
+        return r
+
     # END HELPER METHODS
 
     def get_factors(self, n: int):
@@ -43,7 +88,7 @@ class Project3:
             b = self.isqrt(b2)
         
         return a + b, a - b
-        return p, q
+        # return p, q
 
     def get_private_key_from_p_q_e(self, p: int, q: int, e: int):
         # TODO: Implement this method for Task 5, Step 2
@@ -54,6 +99,7 @@ class Project3:
         while r2 != 0:
             q = r1 // r2
             v1, v2, r2, u1, u2, r1 = (u1 - q * v1), (u2 - q * v2), (r1 - q * r2), v1, v2, r2
+        # _, u1, _ = self.egcd(phi, e)
         return u1 % phi
         
 
@@ -248,7 +294,10 @@ class Project3:
         msg = ''
         m = 0
 
-        # Solve for m, which is an integer value, the line below will convert it to a string:
+        #cubic root is overflowing
+        # m = (c_1 * c_2 * c_3) ** 1./3
+        # Hastad's attack https://1library.net/article/hastad-s-broadcast-attack-rsa-vulnerabilities.qol1r2jq
+        m = self.chineese_reminder([n_1, n_2, n_3], [c_1, c_2, c_3])
         msg = bytes.fromhex(hex(m).rstrip('L')[2:]).decode('UTF-8')
 
         return msg
